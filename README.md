@@ -18,8 +18,7 @@
 <sup>3</sup>Youtu Lab, Tencent,
 <sup>4</sup>Huazhong Agricultural University
 
-<!-- [[`Paper`](https://arxiv.org/pdf/2404.06564.pdf)] 
-[[`Project Page`](https://lewandofskee.github.io/projects/MambaAD/)] -->
+[[`Paper`](https://arxiv.org/pdf/2410.16236)] 
 
 </div>
 
@@ -74,7 +73,7 @@ AVG: The average of the nine benchmarks for comprehensive comparison except MMMU
 | Model                                                   | Vision Encoder                                               | LLM                                                           |  CKPTs
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------  | ------------------------------------------------------------  |
 | LLaVA-KD-1B | [siglip-so400m-patch14-384](https://huggingface.co/google/siglip-so400m-patch14-384) |  [Qwen/Qwen1.5-0.5B](https://huggingface.co/Qwen/Qwen1.5-0.5B)     | [LLaVA-KD-Base-siglip-Qwen1.5-0.5B](https://drive.google.com/file/d/1eoGzu3kKG4qB2Y2nxJ5axVO7uJNP3CJU/view?usp=drive_link)
-| LLaVA-KD-2B | [siglip-so400m-patch14-384](https://huggingface.co/google/siglip-so400m-patch14-384) |  [Qwen/Qwen1.5-1.8B](https://huggingface.co/Qwen/Qwen1.5-1.8B)     | [LLaVA-KD-Base-siglip-Qwen1.5-1.8B]()
+| LLaVA-KD-2B | [siglip-so400m-patch14-384](https://huggingface.co/google/siglip-so400m-patch14-384) |  [Qwen/Qwen1.5-1.8B](https://huggingface.co/Qwen/Qwen1.5-1.8B)     | [LLaVA-KD-Base-siglip-Qwen1.5-1.8B](https://drive.google.com/file/d/1T9K0aoS9bgzkC1taRplNT_QglpbfrdbC/view?usp=drive_link)
 
 
 ## Quickstart
@@ -93,14 +92,14 @@ Download the Pre-trained VisualEnc, LLM, LLaVAKD weights to the `./pretrained_ck
 
 ## :dizzy: Citation
 If you find this code useful, don't forget to star the repo and cite the paper.
-<!-- ```
-<!-- @article{he2024mambaad,
-      title={MambaAD: Exploring State Space Models for Multi-class Unsupervised Anomaly Detection}, 
-      author={Haoyang He and Yuhu Bai and Jiangning Zhang and Qingdong He and Hongxu Chen and Zhenye Gan and Chengjie Wang and Xiangtai Li and Guanzhong Tian and Lei Xie},
-      journal={arXiv preprint arXiv:2404.06564},  
-      year={2024},
-} -->
-<!-- ``` -->
+```
+@article{cai2024llava,
+  title={LLaVA-KD: A Framework of Distilling Multimodal Large Language Models},
+  author={Cai, Yuxuan and Zhang, Jiangning and He, Haoyang and He, Xinwei and Tong, Ao and Gan, Zhenye and Wang, Chengjie and Bai, Xiang},
+  journal={arXiv preprint arXiv:2410.16236},
+  year={2024}
+}
+```
 
 ## 💘 Acknowledgements
 We thank the great works [TinyLLaVA](https://github.com/TinyLLaVA/TinyLLaVA_Factory), [LLaVA](https://github.com/haotian-liu/LLaVA) for providing assistance for our research.
