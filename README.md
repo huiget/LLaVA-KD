@@ -76,6 +76,9 @@ AVG: The average of the nine benchmarks for comprehensive comparison except MMMU
 | LLaVA-KD-2B | [siglip-so400m-patch14-384](https://huggingface.co/google/siglip-so400m-patch14-384) |  [Qwen/Qwen1.5-1.8B](https://huggingface.co/Qwen/Qwen1.5-1.8B)     | [LLaVA-KD-Base-siglip-Qwen1.5-1.8B](https://drive.google.com/file/d/1T9K0aoS9bgzkC1taRplNT_QglpbfrdbC/view?usp=drive_link)
 
 
+## :computer: Evaluation
+Please evaluate the model according to [Evaluation.md](docs/Evaluation.md).
+
 ## Quickstart
 Download the Pre-trained VisualEnc, LLM, LLaVAKD weights to the `./pretrained_ckpt`. And then:
   ```shell
