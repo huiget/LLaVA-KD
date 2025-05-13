@@ -32,6 +32,7 @@ def eval_model(args):
 
     text_processor = TextPreprocess(tokenizer, args.conv_mode)
     data_args = model.config
+    print(f"[quick_inference.eval_model] model.config: {model.config}")
     image_processor = ImagePreprocess(image_processor, data_args)
     model.cuda()
 

@@ -228,6 +228,13 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         self, input_ids, position_ids, attention_mask, past_key_values, labels,
         images, image_sizes=None
     ):
+        r"""
+
+        Args:
+            input_ids: shape torch.Size([1, 46])
+
+            images: shape: torch.Size([1, 3, 384, 384])，第一维并不是批次，而是图片数量，所有小批量的图片都放在一起了
+        """
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids shape: {input_ids is not None and input_ids.shape}")
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids: {input_ids}")
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] position_ids shape: {position_ids is not None and position_ids.shape}")
@@ -241,7 +248,7 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
             return input_ids, position_ids, attention_mask, past_key_values, None, labels
 
         # batch_features = []
-        image_features = self.encode_images(images)
+        image_features = self.encode_images(images) # shape torch.Size([1, 728, 1024])
         # batch_features.append(image_features)
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_features shape: {image_features.shape}")
 
@@ -323,12 +330,17 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
             cur_new_input_embeds = []
             cur_new_labels = []
 
+            # TODO 这里处理有问题，不应该所有图片一起算 norm
             image_norm = F.normalize(image_features, p=2, dim=-1)
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_norm shape: {image_norm.shape}")
             text_norm = F.normalize(cur_input_embeds.unsqueeze(0), p=2, dim=-1) 
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] text_norm shape: {text_norm.shape}")
             image_text_similarity = torch.matmul(image_norm, text_norm.permute(0,2,1))
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_text_similarity shape: {image_text_similarity.shape}")
             image_text_similaritys.append(image_text_similarity)
 
             image_corrlation = torch.matmul(image_norm, image_norm.transpose(-1, -2))
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_corrlation shape: {image_corrlation.shape}")
             image_similaritys.append(image_corrlation)
 
             text_corrlation = torch.matmul(text_norm, text_norm.transpose(-1, -2))
@@ -388,6 +400,7 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
                 ), dim=0)) 
                 
                 try:
+                    # TODO image_text_similarity 使用有问题，似乎假设只有一个批次
                     new_relation_padded.append(torch.cat(
                         (
                             image_text_similarity,

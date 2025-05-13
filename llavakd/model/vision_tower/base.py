@@ -79,6 +79,8 @@ class VisionTower(nn.Module):
         image_features = self._vision_tower(x, output_hidden_states=True)
         image_features = image_features.hidden_states[kwargs.get('vision_feature_layer', -2)]
 
+        print(f"[VisionTower.forward] vision_feature_select_strategy: {kwargs.get('vision_feature_select_strategy', 'None')}")
+
         if kwargs.get('vision_feature_select_strategy', 'patch') == 'patch':
             image_features = image_features[:, 1:]
         elif kwargs.get('vision_feature_select_strategy', 'patch') == 'cls_patch':
