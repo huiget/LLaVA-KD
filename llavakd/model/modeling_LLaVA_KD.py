@@ -228,13 +228,13 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         self, input_ids, position_ids, attention_mask, past_key_values, labels,
         images, image_sizes=None
     ):
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids shape: {input_ids.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] position_ids shape: {position_ids.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] attention_mask shape: {attention_mask.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] past_key_values shape: {past_key_values.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] labels shape: {labels.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] images shape: {images.shape}")
-        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_sizes shape: {image_sizes.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids shape: {input_ids and input_ids.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] position_ids shape: {position_ids and position_ids.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] attention_mask shape: {attention_mask and attention_mask.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] past_key_values shape: {past_key_values and past_key_values.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] labels shape: {labels and labels.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] images shape: {images and images.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_sizes shape: {image_sizes and image_sizes.shape}")
         vision_tower = self.vision_tower
         if vision_tower is None or images is None or input_ids.shape[1] == 1:
             return input_ids, position_ids, attention_mask, past_key_values, None, labels
