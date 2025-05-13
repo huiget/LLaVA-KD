@@ -16,6 +16,8 @@ from ..utils.constants import *
 
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 def get_value_from_kwargs(kwargs, name):
     if name in kwargs:
         return kwargs.pop(name)
