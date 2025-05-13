@@ -37,8 +37,10 @@ def eval_model(args):
 
     msg = Message()
     msg.add_message(qs)
+    print(f"[quick_inference.eval_model] msg.messages: {msg.messages}")
 
     result = text_processor(msg.messages, mode='eval')
+    print(f"[quick_inference.eval_model] result: {result}")
     input_ids = result['input_ids']
     input_ids = input_ids.unsqueeze(0).cuda()
         
@@ -65,10 +67,13 @@ def eval_model(args):
             stopping_criteria=[stopping_criteria],
         )
 
+    print(f"[quick_inference.eval_model] output_ids: {output_ids}")
+
     outputs = tokenizer.batch_decode(
         output_ids, skip_special_tokens=True
     )[0]
     outputs = outputs.strip()
+    print(f"[quick_inference.eval_model] outputs: {outputs}")
     if outputs.endswith(stop_str):
         outputs = outputs[: -len(stop_str)]
     outputs = outputs.strip()

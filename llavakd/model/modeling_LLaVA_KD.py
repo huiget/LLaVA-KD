@@ -229,6 +229,7 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         images, image_sizes=None
     ):
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids shape: {input_ids is not None and input_ids.shape}")
+        print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids: {input_ids}")
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] position_ids shape: {position_ids is not None and position_ids.shape}")
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] attention_mask shape: {attention_mask is not None and attention_mask.shape}")
         print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] past_key_values shape: {past_key_values is not None and past_key_values.shape}")
