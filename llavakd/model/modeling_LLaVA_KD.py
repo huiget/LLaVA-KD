@@ -14,6 +14,8 @@ from . import LLMFactory, ConnectorFactory, VisionTowerFactory
 from .configuration_tinyllava import TinyLlavaConfig
 from ..utils.constants import *
 
+import logging
+
 def get_value_from_kwargs(kwargs, name):
     if name in kwargs:
         return kwargs.pop(name)
@@ -62,6 +64,10 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         self.language_model = LLMFactory(config.llm_model_name_or_path)[0](config.text_config)
         self.vision_tower = VisionTowerFactory(config.vision_model_name_or_path)(config.vision_config)
         self.connector = ConnectorFactory(config.connector_type)(config)
+
+        logging.info("[LLaVAKD.__init__] Loading pretrained language model from {}".format(config.llm_model_name_or_path))
+        logging.info("[LLaVAKD.__init__] Loading pretrained vision tower from {}".format(config.vision_model_name_or_path))
+        logging.info("[LLaVAKD.__init__] Loading pretrained connector from {}".format(config.connector_type))
 
         (Tokenizer, post_load) = LLMFactory(config.llm_model_name_or_path)[1]
         self.tokenizer = post_load(Tokenizer.from_pretrained(
@@ -119,6 +125,7 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         return_dict: Optional[bool] = None,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
         use_cache = use_cache if use_cache is not None else self.config.use_cache
+        logging.info(f"[LLaVAKD.forward] inputs_embeds: {inputs_embeds}")
         if inputs_embeds is None:
             (   
                 image_similaritys, text_similaritys,
@@ -221,6 +228,13 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         self, input_ids, position_ids, attention_mask, past_key_values, labels,
         images, image_sizes=None
     ):
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] input_ids shape: {input_ids.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] position_ids shape: {position_ids.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] attention_mask shape: {attention_mask.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] past_key_values shape: {past_key_values.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] labels shape: {labels.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] images shape: {images.shape}")
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_sizes shape: {image_sizes.shape}")
         vision_tower = self.vision_tower
         if vision_tower is None or images is None or input_ids.shape[1] == 1:
             return input_ids, position_ids, attention_mask, past_key_values, None, labels
@@ -228,7 +242,8 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         # batch_features = []
         image_features = self.encode_images(images)
         # batch_features.append(image_features)
-        
+        logging.info(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] image_features shape: {image_features.shape}")
+
         # TODO: image start / end is not implemented here to support pretraining.
         if getattr(self.config, 'tune_mm_mlp_adapter', False):
             raise NotImplementedError
