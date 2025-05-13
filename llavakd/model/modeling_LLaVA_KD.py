@@ -279,9 +279,12 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         _split_sizes = []
 
         for batch_idx, cur_input_ids in enumerate(input_ids):
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] cur_input_ids shape: {cur_input_ids.shape}")
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] cur_input_ids: {cur_input_ids}")
             num_images = (cur_input_ids == IMAGE_TOKEN_INDEX).sum()
             # import pdb;pdb.set_trace()
 
+            # 处理无图像情况的代码
             if num_images == 0:
                 cur_image_features = image_features[cur_image_idx]
                 cur_input_embeds_1 = self.language_model.get_input_embeddings()(cur_input_ids)
@@ -301,15 +304,19 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
                 continue
     
             # import pdb;pdb.set_trace()
+            # 输入序列中所有图像标记的位置
             image_token_indices = [-1] + torch.where(cur_input_ids == IMAGE_TOKEN_INDEX)[0].tolist() + [cur_input_ids.shape[0]]
             cur_input_ids_noim = []
             cur_labels = labels[batch_idx]            
             cur_labels_noim = []
+            # 分割输入序列，取出所有文本标记片段
             for i in range(len(image_token_indices) - 1): 
                 cur_input_ids_noim.append(cur_input_ids[image_token_indices[i]+1:image_token_indices[i+1]])
                 cur_labels_noim.append(cur_labels[image_token_indices[i]+1:image_token_indices[i+1]])
             split_sizes = [x.shape[0] for x in cur_labels_noim]
             _split_sizes.append(split_sizes)
+            
+            # 将不包含图像标记的文本标记id转换为嵌入向量
             cur_input_embeds = self.language_model.get_input_embeddings()(torch.cat(cur_input_ids_noim))
             
             cur_input_embeds_no_im = torch.split(cur_input_embeds, split_sizes, dim=0)
@@ -327,6 +334,7 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
             text_corrlation = torch.matmul(text_norm, text_norm.transpose(-1, -2))
             text_similaritys.append(text_corrlation)
             
+            # 将图像特征插入到对应的位置，替换原来的图像标记
             for i in range(num_images + 1):
                 # import pdb;pdb.set_trace()
                 cur_new_input_embeds.append(cur_input_embeds_no_im[i])
@@ -342,11 +350,13 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
             cur_new_input_embeds = torch.cat(cur_new_input_embeds) 
             cur_new_labels = torch.cat(cur_new_labels) 
 
+            print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] cur_new_input_embeds shape: {cur_new_input_embeds.shape}")
             new_input_embeds.append(cur_new_input_embeds)
             new_labels.append(cur_new_labels)
         
         # Truncate sequences to max length as image embeddings can make the sequence longer
         tokenizer_model_max_length = getattr(self.config, 'tokenizer_model_max_length', None)
+        print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] tokenizer_model_max_length: {tokenizer_model_max_length}")
         if tokenizer_model_max_length is not None:
             new_input_embeds = [x[:tokenizer_model_max_length] for x in new_input_embeds] 
             new_labels = [x[:tokenizer_model_max_length] for x in new_labels]
