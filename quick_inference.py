@@ -46,12 +46,13 @@ def eval_model(args):
     input_ids = input_ids.unsqueeze(0).cuda()
         
 
-    images = load_image(args.image_file)
-    images_tensor = image_processor(images)
+    image = load_image(args.image_file)
+    images_tensor = image_processor(image)
     images_tensor = images_tensor.unsqueeze(0).half().cuda()
 
     stop_str = text_processor.template.separator.apply()[1]
     keywords = [stop_str]
+    print(f"[quick_inference.eval_model] stop_str: {stop_str}")
     stopping_criteria = KeywordsStoppingCriteria(keywords, tokenizer, input_ids)
 
     with torch.inference_mode():

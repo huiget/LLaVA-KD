@@ -82,10 +82,12 @@ class KeywordsStoppingCriteria(StoppingCriteria):
             if len(cur_keyword_ids) > self.max_keyword_len:
                 self.max_keyword_len = len(cur_keyword_ids)
             self.keyword_ids.append(torch.tensor(cur_keyword_ids))
+        print(f"[KeywordsStoppingCriteria.__init__] keyword_ids: {self.keyword_ids}")
         self.tokenizer = tokenizer
         self.start_len = input_ids.shape[1]
     
     def call_for_batch(self, output_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+        print(f"[KeywordsStoppingCriteria.call_for_batch] output_ids shape: {output_ids.shape}")
         offset = min(output_ids.shape[1] - self.start_len, self.max_keyword_len)
         self.keyword_ids = [keyword_id.to(output_ids.device) for keyword_id in self.keyword_ids]
         for keyword_id in self.keyword_ids:
