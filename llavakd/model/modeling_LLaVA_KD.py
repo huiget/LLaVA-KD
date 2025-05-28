@@ -425,6 +425,9 @@ class LLaVAKD(TinyLlavaPreTrainedModel):
         else:
             new_labels = new_labels_padded
 
+        print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] new_input_embeds shape: {new_input_embeds.shape}")
+        print(f"[LLaVAKD.prepare_inputs_labels_for_multimodal] new_labels shape: {new_labels.shape}")
+
         if _attention_mask is None:
             attention_mask = None
         else:
